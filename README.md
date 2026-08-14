@@ -1,39 +1,36 @@
 # Referat
 
-Norwegian meeting transcription for Claude Code. Point it at a recording and it
-gives you back a structured summary with decisions and todos.
+Norsk møtetranskribering for Claude Code. Du gir den et lydopptak, og får et
+strukturert referat med beslutninger og todos tilbake.
 
-The transcription runs on your own machine, so the audio never gets uploaded
-anywhere. The summary is written by Claude Code in your session, using the
-Pro or Max subscription you already have, which means there is no API key to
-manage and no cost per meeting.
+Transkriberingen kjører på din egen maskin, så lyden lastes aldri opp noe sted.
+Selve referatet skrives av Claude Code i økten din, på Pro- eller
+Max-abonnementet du allerede har. Da er det ingen API-nøkkel å holde styr på, og
+ingen kostnad per møte.
 
-The output is Norwegian. If your meetings are in another language this won't be
-much use to you.
+## Hvorfor NB-Whisper
 
-## Why NB-Whisper
+Generisk Whisper er 2–3 ganger dårligere på norsk. Ordfeilrate:
 
-Generic Whisper is 2–3 times worse on Norwegian. Word error rate:
-
-| Model | NST bokmål | Common Voice nynorsk |
+| Modell | NST bokmål | Common Voice nynorsk |
 |---|---|---|
-| NB-Whisper Large | 2.2 % | 12.6 % |
-| Whisper large-v3 | 6.8 % | 30.0 % |
+| NB-Whisper Large | 2,2 % | 12,6 % |
+| Whisper large-v3 | 6,8 % | 30,0 % |
 
-The difference is largest on dialect, which is where generic models tend to
-fall apart. NB-Whisper was trained by the National Library of Norway on 66,000
-hours of Norwegian speech covering real dialects and both written standards.
+Forskjellen er størst på dialekt, og det er nettopp der generiske modeller
+svikter. NB-Whisper er trent av Nasjonalbiblioteket på 66 000 timer norsk tale
+med ekte dialekter og begge målformer.
 
-## Requirements
+## Krav
 
-- macOS on Apple Silicon
+- Mac med Apple Silicon
 - [Homebrew](https://brew.sh)
-- Claude Code, signed in with a Pro or Max subscription
-- About 1.5 GB of free disk space
+- Claude Code, innlogget med Pro- eller Max-abonnement
+- Rundt 1,5 GB ledig plass
 
-## Install
+## Installasjon
 
-In Claude Code:
+I Claude Code:
 
 ```
 /plugin marketplace add nicoskogen/referat
@@ -42,88 +39,90 @@ In Claude Code:
 /referat-setup
 ```
 
-Restart Claude Code afterwards so the plugin loads.
+Start Claude Code på nytt etterpå, slik at pluginen lastes.
 
-`/referat-setup` installs `whisper-cpp` and `ffmpeg` through Homebrew, downloads
-the 1 GB model into `~/.cache/nb-whisper/`, checks its checksum and runs a smoke
-test. It takes a few minutes and you only do it once.
+`/referat-setup` installerer `whisper-cpp` og `ffmpeg` via Homebrew, laster ned
+modellen på 1 GB til `~/.cache/nb-whisper/`, sjekker kontrollsummen og tester
+til slutt at alt virker. Det tar noen minutter, og du gjør det bare én gang.
 
-The second marketplace is there for
+Den andre katalogen er der for
 [`humanizer`](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
-which cleans up the Norwegian prose in the summary. It gets installed
-automatically as a dependency, but Claude Code will not pull a plugin from a
-marketplace you haven't added yourself.
+som vasker språket i referatet. Den installeres automatisk som avhengighet, men
+Claude Code henter ikke plugins fra en katalog du ikke har lagt til selv.
 
-There is nothing to clone, and no Python or HuggingFace token involved.
+Du trenger ikke klone noe, og verken Python eller HuggingFace-token er
+involvert.
 
-## Usage
+## Bruk
 
 ```
 /referat ~/Downloads/mote.m4a
 ```
 
-Any format ffmpeg can read works: `m4a`, `mp3`, `wav`, `mp4`, `aiff`. Recordings
-from Teams, Zoom, Meet or a phone left on the table are all fine.
+Det fungerer med alle formater ffmpeg kan lese: `m4a`, `mp3`, `wav`, `mp4`,
+`aiff`. Opptak fra Teams, Zoom, Meet eller en telefon som lå på bordet går like
+fint.
 
-You get three files next to the audio:
+Du får tre filer ved siden av lydfilen:
 
-| File | Contents |
+| Fil | Innhold |
 |---|---|
-| `<name>.txt` | Raw transcript |
-| `<name>.vtt` | Transcript with timestamps |
-| `<name>-referat.md` | The finished summary |
+| `<navn>.txt` | Rå transkripsjon |
+| `<navn>.vtt` | Transkripsjon med tidsstempler |
+| `<navn>-referat.md` | Det ferdige referatet |
 
-An hour of audio takes roughly 10 to 20 minutes on an M1 Pro. The transcript is
-cached, so running `/referat` again on the same file returns immediately.
+En time med lyd tar omtrent 10–20 minutter på en M1 Pro. Transkripsjonen
+mellomlagres, så kjører du `/referat` på samme fil igjen, kommer svaret med én
+gang.
 
-## How it works
+## Slik virker det
 
 ```
-audio ──► ffmpeg ──► whisper.cpp + NB-Whisper ──► transcript
-          16k mono     local, Metal-accelerated        │
-                                                        ▼
-                                        Claude Code reads it in-session
-                                                        ▼
-                                                   referat.md
+lyd ──► ffmpeg ──► whisper.cpp + NB-Whisper ──► transkripsjon
+        16k mono     lokalt, Metal-akselerert         │
+                                                       ▼
+                                       Claude Code leser den i økten
+                                                       ▼
+                                                 referat.md
 ```
 
-Transcription is a local bash step. The summary is written by Claude Code, which
-is already authenticated with your subscription, and that is why no API key
-appears anywhere in the pipeline.
+Transkriberingen er et lokalt bash-steg. Referatet skrives av Claude Code, som
+allerede er autentisert med abonnementet ditt, og det er derfor ingen API-nøkkel
+dukker opp noe sted i kjeden.
 
-## Limitations
+## Begrensninger
 
-There is no speaker diarization. The summary records what was said rather than
-who said it, unless names come up in the conversation. Adding diarization would
-pull in Python, PyTorch and a gated HuggingFace model, which seemed like a bad
-trade for a feature only some people need.
+Referatet skiller ikke mellom talere. Det forteller hva som ble sagt, ikke hvem
+som sa det, med mindre navn nevnes i samtalen. Å legge det til ville dratt inn
+Python, PyTorch og en tilgangsstyrt modell fra HuggingFace, og det er ikke verdt
+det for noe bare enkelte har bruk for.
 
-English product names come out badly. The model is trained on Norwegian, so
-ordinary Norwegian is reliable but English loanwords and brand names usually
-need correcting by hand.
+Engelske produktnavn blir dårlig gjengitt. Modellen er trent på norsk, så vanlig
+norsk er til å stole på, mens engelske låneord og merkenavn som regel må rettes
+for hånd.
 
-Read the summary before you send it anywhere. Speech recognition still fails on
-cross-talk and poor microphones. Passages the model was unsure about are marked
-`[uklart]`, though that won't catch everything.
+Les gjennom referatet før du sender det videre. Talegjenkjenning svikter
+fremdeles ved kryssprat og dårlige mikrofoner. Passasjer modellen var usikker
+på, er merket `[uklart]`, men det fanger ikke alt.
 
-You also have to run it yourself. Nothing picks up meetings automatically, since
-unattended runs would need API access and therefore a separate API key outside
-your subscription.
+Du må også kjøre det selv. Ingenting plukker opp møter automatisk, siden
+uovervåket kjøring ville krevd API-tilgang og dermed en egen API-nøkkel utenfor
+abonnementet.
 
-macOS on Apple Silicon only, for now.
+Foreløpig virker det bare på macOS med Apple Silicon.
 
-One practical note: microphone placement affects the result more than which
-model you pick. A recording from a microphone on the table will transcribe
-noticeably better than a laptop at the other end of the room.
+Hvor mikrofonen står betyr mer for resultatet enn hvilken modell du velger. Et
+opptak fra en mikrofon på bordet blir merkbart bedre enn en laptop i andre enden
+av rommet.
 
-## Credits
+## Kreditering
 
-- [NB-Whisper](https://huggingface.co/NbAiLab/nb-whisper-large), National
-  Library of Norway, Apache 2.0
+- [NB-Whisper](https://huggingface.co/NbAiLab/nb-whisper-large),
+  Nasjonalbiblioteket, Apache 2.0
 - [whisper.cpp](https://github.com/ggerganov/whisper.cpp), MIT
 - [humanizer](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
   Floka AS, MIT
 
-## License
+## Lisens
 
 MIT
