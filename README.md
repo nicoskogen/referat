@@ -41,6 +41,22 @@ I Claude Code:
 
 Start Claude Code på nytt etterpå, slik at pluginen lastes.
 
+### Eller bare be Claude om det
+
+Du trenger ikke skrive kommandoene selv. Åpne Claude Code og si det med egne
+ord, for eksempel:
+
+> Installer referat-pluginen fra github.com/nicoskogen/referat, og kjør
+> oppsettet.
+
+Claude kjører kommandoene for deg og sier fra når du må starte på nytt. Det
+samme gjelder når du skal bruke det: «lag et referat av lydfila i nedlastinger»
+fungerer like godt som `/referat`.
+
+Dette må skje i **Claude Code**, ikke i det vanlige chatvinduet på claude.ai.
+Chatvinduet har verken tilgang til maskinen din eller et pluginsystem, så der
+skjer det ingenting uansett hvor pent du spør.
+
 `/referat-setup` installerer `whisper-cpp` og `ffmpeg` via Homebrew, laster ned
 modellen på 1 GB til `~/.cache/nb-whisper/`, sjekker kontrollsummen og tester
 til slutt at alt virker. Det tar noen minutter, og du gjør det bare én gang.
