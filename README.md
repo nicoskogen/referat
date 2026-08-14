@@ -1,12 +1,21 @@
-# Referat
+# Transkriber
 
-Norsk møtetranskribering for Claude Code. Du gir den et lydopptak, og får et
-strukturert referat med beslutninger og todos tilbake.
+Norsk tale til tekst for Claude Code. Du gir den et lyd- eller videoopptak og
+velger hva du vil ha ut:
+
+| Du får | Fil | Passer til |
+|---|---|---|
+| Møtereferat | `<navn>-referat.md` | Beslutninger, todos og tematisk sorterte notater |
+| Ren transkripsjon | `<navn>.txt` og `.vtt` | Alt som ble sagt, uten tolkning |
+| Undertekster | `<navn>.srt` | Import rett i redigeringsprogrammet |
 
 Transkriberingen kjører på din egen maskin, så lyden lastes aldri opp noe sted.
-Selve referatet skrives av Claude Code i økten din, på Pro- eller
-Max-abonnementet du allerede har. Da er det ingen API-nøkkel å holde styr på, og
-ingen kostnad per møte.
+Referatet skrives av Claude Code i økten din, på Pro- eller Max-abonnementet du
+allerede har. Da er det ingen API-nøkkel å holde styr på, og ingen kostnad per
+opptak.
+
+Video går rett inn. Du trenger ikke eksportere lyd fra `.mp4` eller `.mov`
+først.
 
 ## Hvorfor NB-Whisper
 
@@ -40,13 +49,10 @@ ligger inne i Claude-appen du allerede har.
    og Cowork.
 3. Lim inn denne setningen:
 
-   > Installer referat-pluginen fra github.com/nicoskogen/referat, og kjør
-   > oppsettet etterpå.
+   > Installer transkriber-pluginen fra github.com/nicoskogen/transkriber, og
+   > kjør oppsettet etterpå.
 
 4. Claude gjør resten og sier fra når du må starte appen på nytt.
-
-Etterpå lager du et referat ved å si det på vanlig norsk, for eksempel «lag et
-referat av lydfila som ligger i nedlastinger».
 
 Det må skje under **Code**. Vanlig chat har ingen tilgang til maskinen din, og
 Cowork har et eget pluginsystem som dette ikke ligger i. Begge deler vil bare
@@ -54,20 +60,19 @@ svare at de ikke får det til.
 
 ### Kommandoene, hvis du foretrekker det
 
-I Claude Code:
-
 ```
-/plugin marketplace add nicoskogen/referat
+/plugin marketplace add nicoskogen/transkriber
 /plugin marketplace add floka-as/floka-marketplace
-/plugin install referat
-/referat-setup
+/plugin install transkriber
+/transkriber-setup
 ```
 
 Start Claude Code på nytt etterpå, slik at pluginen lastes.
 
-`/referat-setup` installerer `whisper-cpp` og `ffmpeg` via Homebrew, laster ned
-modellen på 1 GB til `~/.cache/nb-whisper/`, sjekker kontrollsummen og tester
-til slutt at alt virker. Det tar noen minutter, og du gjør det bare én gang.
+`/transkriber-setup` installerer `whisper-cpp` og `ffmpeg` via Homebrew, laster
+ned modellen på 1 GB til `~/.cache/nb-whisper/`, sjekker kontrollsummen og
+tester til slutt at alt virker. Det tar noen minutter, og du gjør det bare én
+gang.
 
 Den andre katalogen er der for
 [`humanizer`](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
@@ -80,43 +85,48 @@ involvert.
 ## Bruk
 
 Du trenger ikke opprette noe prosjekt eller noen mappe. Pluginen bryr seg ikke
-om hvor Claude Code er åpnet, og skriver referatet ved siden av lydfilen
-uansett. Ligger opptaket i nedlastingsmappa, kan du la det bli der.
+om hvor Claude Code er åpnet, og legger resultatet ved siden av opptaket
+uansett.
 
 ```
-/referat ~/Downloads/mote.m4a
+/transkriber ~/Downloads/mote.m4a
 ```
 
-Det fungerer med alle formater ffmpeg kan lese: `m4a`, `mp3`, `wav`, `mp4`,
-`aiff`. Opptak fra Teams, Zoom, Meet eller en telefon som lå på bordet går like
-fint.
+Claude spør hva du vil ha ut. Sier du det med én gang, slipper du spørsmålet:
 
-Du får tre filer ved siden av lydfilen:
+> lag undertekster av intervjuet som ligger på skrivebordet
 
-| Fil | Innhold |
-|---|---|
-| `<navn>.txt` | Rå transkripsjon |
-| `<navn>.vtt` | Transkripsjon med tidsstempler |
-| `<navn>-referat.md` | Det ferdige referatet |
+Alle formater ffmpeg kan lese fungerer, både lyd og video: `m4a`, `mp3`, `wav`,
+`aiff`, `mp4`, `mov`, `mkv`. Opptak fra Teams, Zoom, Meet eller en telefon som
+lå på bordet går like fint.
 
-En time med lyd tar omtrent 10–20 minutter på en M1 Pro. Transkripsjonen
-mellomlagres, så kjører du `/referat` på samme fil igjen, kommer svaret med én
-gang.
+En time med opptak tar omtrent 10–20 minutter på en M1 Pro. Resultatet
+mellomlagres, så ber du om det samme igjen, kommer svaret med én gang.
+
+### Undertekster
+
+Linjene deles på omtrent 42 tegn og brytes på hele ord, som er vanlig
+kringkastingsstandard. Filen er alminnelig SRT og kan importeres rett i
+Premiere, Resolve, Final Cut og alt annet som leser undertekster.
+
+Underteksten språkvaskes ikke. Den skal gjengi det som faktisk ble sagt, ellers
+stemmer den ikke med lyden.
 
 ## Slik virker det
 
 ```
-lyd ──► ffmpeg ──► whisper.cpp + NB-Whisper ──► transkripsjon
-        16k mono     lokalt, Metal-akselerert         │
-                                                       ▼
-                                       Claude Code leser den i økten
-                                                       ▼
-                                                 referat.md
+lyd/video ──► ffmpeg ──► whisper.cpp + NB-Whisper ──► .txt / .vtt / .srt
+              16k mono     lokalt, Metal-akselerert          │
+                                                              ▼
+                                      Claude Code leser den i økten (kun referat)
+                                                              ▼
+                                                        referat.md
 ```
 
-Transkriberingen er et lokalt bash-steg. Referatet skrives av Claude Code, som
-allerede er autentisert med abonnementet ditt, og det er derfor ingen API-nøkkel
-dukker opp noe sted i kjeden.
+Transkriberingen er et lokalt bash-steg. Ren transkripsjon og undertekster
+stopper der. Bare referatet går videre til Claude Code, som allerede er
+autentisert med abonnementet ditt, og det er derfor ingen API-nøkkel dukker opp
+noe sted i kjeden.
 
 ## Begrensninger
 
@@ -127,14 +137,14 @@ det for noe bare enkelte har bruk for.
 
 Engelske produktnavn blir dårlig gjengitt. Modellen er trent på norsk, så vanlig
 norsk er til å stole på, mens engelske låneord og merkenavn som regel må rettes
-for hånd.
+for hånd. Det merkes særlig på undertekster.
 
-Les gjennom referatet før du sender det videre. Talegjenkjenning svikter
-fremdeles ved kryssprat og dårlige mikrofoner. Passasjer modellen var usikker
-på, er merket `[uklart]`, men det fanger ikke alt.
+Les gjennom resultatet før du bruker det. Talegjenkjenning svikter fremdeles ved
+kryssprat og dårlige mikrofoner. I referatet er passasjer modellen var usikker
+på merket `[uklart]`, men det fanger ikke alt.
 
-Du må også kjøre det selv. Ingenting plukker opp møter automatisk, siden
-uovervåket kjøring ville krevd API-tilgang og dermed en egen API-nøkkel utenfor
+Du må kjøre det selv. Ingenting plukker opp møter automatisk, siden uovervåket
+kjøring ville krevd API-tilgang og dermed en egen API-nøkkel utenfor
 abonnementet.
 
 Foreløpig virker det bare på macOS med Apple Silicon.

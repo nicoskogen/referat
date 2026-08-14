@@ -4,7 +4,7 @@ argument-hint: "[--full]"
 allowed-tools: Bash
 ---
 
-Kjør engangsoppsettet for referat-pluginen.
+Kjør engangsoppsettet for transkriber-pluginen.
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh $ARGUMENTS

@@ -1,8 +1,8 @@
 {
-  "name": "referat",
-  "displayName": "Referat — norsk møtetranskribering",
+  "name": "transkriber",
+  "displayName": "Transkriber — norsk tale til tekst",
   "version": "0.1.0",
-  "description": "Transkriberer norske møteopptak lokalt med NB-Whisper og skriver et strukturert referat med todos. Ingen API-nøkkel, ingen lyd ut av maskinen.",
+  "description": "Transkriberer norsk lyd og video lokalt med NB-Whisper. Gir møtereferat, ren transkripsjon eller undertekster (.srt). Ingen API-nøkkel, ingenting forlater maskinen.",
   "author": {
     "name": "Nico Skogen",
     "url": "https://github.com/nicoskogen"
@@ -13,6 +13,8 @@
     "norwegian",
     "transkribering",
     "transcription",
+    "undertekster",
+    "srt",
     "møtereferat",
     "whisper",
     "nb-whisper"

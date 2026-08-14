@@ -1,27 +1,28 @@
 {
-  "name": "referat",
+  "name": "transkriber",
   "owner": {
     "name": "Nico Skogen",
     "url": "https://github.com/nicoskogen"
   },
   "metadata": {
-    "description": "Norsk møtetranskribering for Claude Code"
+    "description": "Norsk tale til tekst for Claude Code"
   },
   "allowCrossMarketplaceDependenciesOn": [
     "floka-marketplace"
   ],
   "plugins": [
     {
-      "name": "referat",
-      "displayName": "Referat — norsk møtetranskribering",
+      "name": "transkriber",
+      "displayName": "Transkriber — norsk tale til tekst",
       "source": "./",
-      "description": "Transkriberer norske møteopptak lokalt med NB-Whisper og skriver et strukturert referat med todos. Ingen API-nøkkel, ingen lyd ut av maskinen.",
+      "description": "Transkriberer norsk lyd og video lokalt med NB-Whisper. Gir møtereferat, ren transkripsjon eller undertekster (.srt). Ingen API-nøkkel, ingenting forlater maskinen.",
       "version": "0.1.0",
       "license": "MIT",
       "keywords": [
         "norsk",
-        "norwegian",
         "transkribering",
+        "undertekster",
+        "srt",
         "møtereferat",
         "whisper"
       ],

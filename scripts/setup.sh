@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Engangsoppsett for referat: installerer whisper.cpp + ffmpeg og laster ned
+# Engangsoppsett for transkriber: installerer whisper.cpp + ffmpeg og laster ned
 # NB-Whisper-modellen fra Nasjonalbiblioteket.
 #
 #   ./setup.sh          laster ned kvantisert modell (1031 MB) — anbefalt
@@ -25,7 +25,7 @@ if [ "${1:-}" = "--full" ]; then
 fi
 
 say_step() { printf '\n▸ %s\n' "$1"; }
-die()      { printf '\n✗ referat: %s\n' "$1" >&2; exit 1; }
+die()      { printf '\n✗ transkriber: %s\n' "$1" >&2; exit 1; }
 
 # ---------------------------------------------------------------- plattform
 [ "$(uname -s)" = "Darwin" ] || die "setup.sh støtter foreløpig kun macOS."
@@ -98,8 +98,12 @@ fi
 
 say_step "Ferdig"
 cat <<'EOF'
-  Bruk:  /referat <sti-til-lydfil>
+  Bruk:  /transkriber <sti-til-fil>
 
-  Støtter m4a, mp3, wav, mp4, aiff — alt ffmpeg kan lese.
-  Første kjøring på en times møte tar typisk 15–25 minutter.
+  Du blir spurt om du vil ha møtereferat, ren transkripsjon eller
+  undertekster (.srt). Sier du det med én gang, slipper du spørsmålet:
+  «lag undertekster av opptaket i nedlastinger».
+
+  Video går rett inn. .mp4 og .mov trenger ingen lydeksport først.
+  En times opptak tar typisk 10-20 minutter.
 EOF
