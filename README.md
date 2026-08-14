@@ -30,6 +30,30 @@ med ekte dialekter og begge målformer.
 
 ## Installasjon
 
+### Har du aldri brukt Claude Code?
+
+Du trenger ikke installere noe nytt, og du trenger ikke terminalen. Claude Code
+ligger inne i Claude-appen du allerede har.
+
+1. Åpne Claude-appen.
+2. Velg **Code** i sidemenyen. Det er en egen del av appen, ved siden av chat
+   og Cowork.
+3. Lim inn denne setningen:
+
+   > Installer referat-pluginen fra github.com/nicoskogen/referat, og kjør
+   > oppsettet etterpå.
+
+4. Claude gjør resten og sier fra når du må starte appen på nytt.
+
+Etterpå lager du et referat ved å si det på vanlig norsk, for eksempel «lag et
+referat av lydfila som ligger i nedlastinger».
+
+Det må skje under **Code**. Vanlig chat har ingen tilgang til maskinen din, og
+Cowork har et eget pluginsystem som dette ikke ligger i. Begge deler vil bare
+svare at de ikke får det til.
+
+### Kommandoene, hvis du foretrekker det
+
 I Claude Code:
 
 ```
@@ -40,22 +64,6 @@ I Claude Code:
 ```
 
 Start Claude Code på nytt etterpå, slik at pluginen lastes.
-
-### Eller bare be Claude om det
-
-Du trenger ikke skrive kommandoene selv. Åpne Claude Code og si det med egne
-ord, for eksempel:
-
-> Installer referat-pluginen fra github.com/nicoskogen/referat, og kjør
-> oppsettet.
-
-Claude kjører kommandoene for deg og sier fra når du må starte på nytt. Det
-samme gjelder når du skal bruke det: «lag et referat av lydfila i nedlastinger»
-fungerer like godt som `/referat`.
-
-Dette må skje i **Claude Code**, ikke i det vanlige chatvinduet på claude.ai.
-Chatvinduet har verken tilgang til maskinen din eller et pluginsystem, så der
-skjer det ingenting uansett hvor pent du spør.
 
 `/referat-setup` installerer `whisper-cpp` og `ffmpeg` via Homebrew, laster ned
 modellen på 1 GB til `~/.cache/nb-whisper/`, sjekker kontrollsummen og tester
