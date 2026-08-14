@@ -1,0 +1,26 @@
+{
+  "name": "referat",
+  "displayName": "Referat — norsk møtetranskribering",
+  "version": "0.1.0",
+  "description": "Transkriberer norske møteopptak lokalt med NB-Whisper og skriver et strukturert referat med todos. Ingen API-nøkkel, ingen lyd ut av maskinen.",
+  "author": {
+    "name": "Nico Skogen",
+    "url": "https://github.com/nicoskogen"
+  },
+  "license": "MIT",
+  "keywords": [
+    "norsk",
+    "norwegian",
+    "transkribering",
+    "transcription",
+    "møtereferat",
+    "whisper",
+    "nb-whisper"
+  ],
+  "dependencies": [
+    {
+      "name": "humanizer",
+      "marketplace": "floka-marketplace"
+    }
+  ]
+}
