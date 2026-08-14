@@ -55,6 +55,10 @@ involvert.
 
 ## Bruk
 
+Du trenger ikke opprette noe prosjekt eller noen mappe. Pluginen bryr seg ikke
+om hvor Claude Code er åpnet, og skriver referatet ved siden av lydfilen
+uansett. Ligger opptaket i nedlastingsmappa, kan du la det bli der.
+
 ```
 /referat ~/Downloads/mote.m4a
 ```
