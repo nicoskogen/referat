@@ -1,37 +1,35 @@
 # Referat
 
-Norwegian meeting transcription for Claude Code. Point it at a recording, get
-back a structured meeting summary with decisions and todos.
+Norwegian meeting transcription for Claude Code. Point it at a recording and it
+gives you back a structured summary with decisions and todos.
 
-- **Audio never leaves your machine.** Transcription runs locally.
-- **No API key.** The summary is written by Claude Code in your session, on the
-  Pro/Max subscription you already have.
-- **No per-meeting cost.**
-- **Built for Norwegian.** Uses NB-Whisper from the National Library of Norway,
-  not generic Whisper.
+The transcription runs on your own machine, so the audio never gets uploaded
+anywhere. The summary is written by Claude Code in your session, using the
+Pro or Max subscription you already have, which means there is no API key to
+manage and no cost per meeting.
 
-The output is Norwegian. If your meetings aren't in Norwegian, this isn't the
-tool you want.
+The output is Norwegian. If your meetings are in another language this won't be
+much use to you.
 
 ## Why NB-Whisper
 
-Generic Whisper is 2–3× worse on Norwegian. Word error rate:
+Generic Whisper is 2–3 times worse on Norwegian. Word error rate:
 
 | Model | NST bokmål | Common Voice nynorsk |
 |---|---|---|
-| **NB-Whisper Large** | **2.2 %** | **12.6 %** |
+| NB-Whisper Large | 2.2 % | 12.6 % |
 | Whisper large-v3 | 6.8 % | 30.0 % |
 
-The gap is widest on dialect, which is exactly where generic models fall over.
-NB-Whisper is trained on 66,000 hours of Norwegian speech covering real dialects
-and both written standards.
+The difference is largest on dialect, which is where generic models tend to
+fall apart. NB-Whisper was trained by the National Library of Norway on 66,000
+hours of Norwegian speech covering real dialects and both written standards.
 
 ## Requirements
 
 - macOS on Apple Silicon
 - [Homebrew](https://brew.sh)
 - Claude Code, signed in with a Pro or Max subscription
-- ~1.5 GB free disk space
+- About 1.5 GB of free disk space
 
 ## Install
 
@@ -44,18 +42,19 @@ In Claude Code:
 /referat-setup
 ```
 
-Then **restart Claude Code** so the plugin loads.
+Restart Claude Code afterwards so the plugin loads.
 
-`/referat-setup` installs `whisper-cpp` and `ffmpeg` via Homebrew, downloads the
-1 GB model to `~/.cache/nb-whisper/`, verifies its checksum, and runs a smoke
-test. A few minutes, once.
+`/referat-setup` installs `whisper-cpp` and `ffmpeg` through Homebrew, downloads
+the 1 GB model into `~/.cache/nb-whisper/`, checks its checksum and runs a smoke
+test. It takes a few minutes and you only do it once.
 
-The second marketplace provides [`humanizer`](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
-used to clean up the Norwegian prose. It installs automatically as a dependency,
-but Claude Code won't pull a plugin from a marketplace you haven't added
-yourself.
+The second marketplace is there for
+[`humanizer`](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
+which cleans up the Norwegian prose in the summary. It gets installed
+automatically as a dependency, but Claude Code will not pull a plugin from a
+marketplace you haven't added yourself.
 
-You don't need to clone this repo. No Python, no HuggingFace token.
+There is nothing to clone, and no Python or HuggingFace token involved.
 
 ## Usage
 
@@ -63,10 +62,10 @@ You don't need to clone this repo. No Python, no HuggingFace token.
 /referat ~/Downloads/mote.m4a
 ```
 
-Any format ffmpeg reads: `m4a`, `mp3`, `wav`, `mp4`, `aiff`. It doesn't matter
-whether the recording came from Teams, Zoom, Meet, or a phone on the table.
+Any format ffmpeg can read works: `m4a`, `mp3`, `wav`, `mp4`, `aiff`. Recordings
+from Teams, Zoom, Meet or a phone left on the table are all fine.
 
-Three files land next to the audio:
+You get three files next to the audio:
 
 | File | Contents |
 |---|---|
@@ -74,8 +73,8 @@ Three files land next to the audio:
 | `<name>.vtt` | Transcript with timestamps |
 | `<name>-referat.md` | The finished summary |
 
-Expect roughly 10–20 minutes per hour of audio on an M1 Pro. The transcript is
-cached, so re-running `/referat` on the same file is instant.
+An hour of audio takes roughly 10 to 20 minutes on an M1 Pro. The transcript is
+cached, so running `/referat` again on the same file returns immediately.
 
 ## How it works
 
@@ -88,37 +87,42 @@ audio ──► ffmpeg ──► whisper.cpp + NB-Whisper ──► transcript
                                                    referat.md
 ```
 
-Transcription is a local bash step. The summary is written by Claude Code
-itself, which is already authenticated with your subscription — that's why no
-API key is involved anywhere.
+Transcription is a local bash step. The summary is written by Claude Code, which
+is already authenticated with your subscription, and that is why no API key
+appears anywhere in the pipeline.
 
 ## Limitations
 
-- **No speaker diarization.** The summary records what was said, not who said
-  it, unless names are spoken aloud. Adding it would mean Python, PyTorch and a
-  gated HuggingFace model, which would make installation much worse for everyone
-  to benefit a few.
-- **English product names are transcribed poorly.** The model is trained on
-  Norwegian. Ordinary Norwegian comes through well; English loanwords and brand
-  names need proofreading.
-- **Read it before you send it.** Speech recognition fails on cross-talk and bad
-  microphones. The summary marks passages it isn't sure about with `[uklart]`,
-  but that won't catch everything.
-- **You run it yourself.** There's no automation that picks up meetings on its
-  own. Unattended runs would need API access, and therefore an API key billed
-  separately from your subscription.
-- **macOS on Apple Silicon only**, for now.
+There is no speaker diarization. The summary records what was said rather than
+who said it, unless names come up in the conversation. Adding diarization would
+pull in Python, PyTorch and a gated HuggingFace model, which seemed like a bad
+trade for a feature only some people need.
 
-A good microphone matters more than any model choice. A recording from a
-mic in the middle of the table beats a laptop across the room every time.
+English product names come out badly. The model is trained on Norwegian, so
+ordinary Norwegian is reliable but English loanwords and brand names usually
+need correcting by hand.
+
+Read the summary before you send it anywhere. Speech recognition still fails on
+cross-talk and poor microphones. Passages the model was unsure about are marked
+`[uklart]`, though that won't catch everything.
+
+You also have to run it yourself. Nothing picks up meetings automatically, since
+unattended runs would need API access and therefore a separate API key outside
+your subscription.
+
+macOS on Apple Silicon only, for now.
+
+One practical note: microphone placement affects the result more than which
+model you pick. A recording from a microphone on the table will transcribe
+noticeably better than a laptop at the other end of the room.
 
 ## Credits
 
-- [NB-Whisper](https://huggingface.co/NbAiLab/nb-whisper-large) — National
+- [NB-Whisper](https://huggingface.co/NbAiLab/nb-whisper-large), National
   Library of Norway, Apache 2.0
-- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) — MIT
-- [humanizer](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer)
-  — Floka AS, MIT
+- [whisper.cpp](https://github.com/ggerganov/whisper.cpp), MIT
+- [humanizer](https://github.com/Floka-as/floka-marketplace/tree/main/humanizer),
+  Floka AS, MIT
 
 ## License
 
